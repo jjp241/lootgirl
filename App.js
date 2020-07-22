@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React, {useState, Component} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -29,40 +29,44 @@ import {
 
 import Prize from './Prize'
 
-const App = () => {
-  //jeden sposob deklarowania zmiennych:
-  const fortune_multiplier = 1.4
+const fortune_multiplier = 1.4;
 
-  const [cash, setCash] = useState(100);
-  const [lastprize, setLastprize] = useState(0);
-  const increment = () => {
-    setLastprize(Math.floor(Math.random() * fortune_multiplier)*Math.floor(Math.random() * 50))
-    setCash(Math.max(0,(cash+lastprize-10)))
-  }
-  const addMoney = () => {
-    setCash(cash+100)
+class App extends Component {
+  constructor(props) {
+      super(props);
+      this.state = {fortune_multiplier:1.4,cash:100,lastprize:0};
   }
 
-  //drugi sposob deklarowania, chodzi o zadeklarowanie w states
-  return (
-    <View style = {styles.screen}>
-      <Image source={require('./resources/logo.png')} style= {styles.logoImage}/>
-      <Text style={styles.bigText}> Credit: {cash}$</Text>
-      <View style = {styles.container}>
-        <Prize value={lastprize} platform="Steam"/>
-      </View>
-      <View style = {styles.GUIcontainer}>
-        <TouchableOpacity style={styles.mainButton} onPress={increment}>
-          <Image source={require('./resources/button.gif')}/>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.smallButton} onPress={addMoney}>
-          <Text style={styles.bigText}> Add 100$ </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+  addMoney = () => {
+    this.setState({cash:this.state.cash+100})
+  }
 
-  );
-};
+  increment = () => {
+    this.setState({lastprize:Math.floor(Math.random() * fortune_multiplier)*Math.floor(Math.random() * 50)})
+    this.setState({cash:Math.max(0,(this.state.cash+this.state.lastprize-10))})
+  }
+
+  render(){
+    return (
+      <View style = {styles.screen}>
+        <Image source={require('./resources/logo.png')} style= {styles.logoImage}/>
+        <Text style={styles.bigText}> Credit: {this.state.cash}$</Text>
+        <View style = {styles.container}>
+          <Prize value={this.state.lastprize} platform="Steam"/>
+        </View>
+        <View style = {styles.GUIcontainer}>
+          <TouchableOpacity style={styles.mainButton} onPress={this.increment}>
+            <Image source={require('./resources/button.gif')}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.smallButton} onPress={this.addMoney}>
+            <Text style={styles.bigText}> Add 100$ </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+    );
+  };
+}
 
 const styles = StyleSheet.create({
   logoImage: {
